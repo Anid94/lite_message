@@ -1,0 +1,21 @@
+# Виртуальное окружение
+.venv/
+venv/
+
+# Кеши Python и инструментов
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Локальные настройки и секреты
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+
+# Логи
+*.log
