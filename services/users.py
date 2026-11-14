@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
 from models import User
-from security import hash_password
+from security import hash_password, verify_password, create_access_token
 from repo.users import UsersRepo
-from schemas import UserCreate
-from exceptions import EmailAlreadyIsTaken, UsernameAlreadyIsTaken
+from schemas import UserCreate, UserLogin
+from exceptions import EmailAlreadyIsTaken, UsernameAlreadyIsTaken, InvalidCredentials
 
 
 class UserService:
@@ -39,3 +39,11 @@ class UserService:
             raise
         self.db.refresh(user)
         return user
+
+    def login(self, payload: UserLogin) -> str:
+        user = self.repo.get_by_email(payload.email)
+        if user is None:
+            raise InvalidCredentials
+        if not verify_password(payload.password, user.password_hash):
+            raise InvalidCredentials
+        return create_access_token(user.id, user.token_version)

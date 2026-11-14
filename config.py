@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     postgres_db: str
     postgres_host: str = "127.0.0.1"
     postgres_port: int = 5433
+    jwt_secret_key: str
+    access_token_expire_minutes: int = 30
 
     model_config = SettingsConfigDict(
         env_file=".env",

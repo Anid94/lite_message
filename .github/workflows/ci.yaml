@@ -14,6 +14,7 @@ jobs:
       POSTGRES_DB: lite_message_test
       POSTGRES_HOST: 127.0.0.1
       POSTGRES_PORT: "5433"
+      JWT_SECRET_KEY: "4c70f2f131ffa0d4f7d01e8b229697a497e45cda5ed39d2973c4a16e8688396d"
 
     services:
       postgres:

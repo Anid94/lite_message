@@ -12,3 +12,4 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
     display_name: Mapped[str | None] = mapped_column(String(64), nullable=True)
     password_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    token_version: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
