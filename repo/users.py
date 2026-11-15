@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from models import User
@@ -34,4 +34,12 @@ class UsersRepo:
             password_hash=password_hash,
         )
         self.db.add(user)
+        return user
+
+    def update(self, changes: dict, user_id: int) -> User | None:
+        stmt = update(User).where(
+            User.id == user_id
+        ).values(changes).returning(User)
+        user = self.db.scalar(stmt)
+
         return user

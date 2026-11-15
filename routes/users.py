@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from dependencies import get_current_user
-from schemas import UserRead, UserCreate, TokenRead, UserLogin
+from schemas import UserRead, UserCreate, TokenRead, UserLogin, UserUpdate
 from services.users import UserService
 from models import User
 
@@ -34,3 +34,12 @@ def login(
 ):
     token = service.login(payload)
     return TokenRead(access_token=token)
+
+
+@router.patch("/me", status_code=200, response_model=UserRead)
+def user_update(
+        payload: UserUpdate,
+        service: UserService = Depends(get_user_services),
+        current_user: User = Depends(get_current_user)
+):
+    return service.update(payload, current_user)

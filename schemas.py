@@ -1,3 +1,5 @@
+from typing import ValuesView
+
 from pydantic import BaseModel, Field, EmailStr, field_validator, ConfigDict
 
 
@@ -22,6 +24,7 @@ class UserRead(BaseModel):
     id: int
     email: EmailStr
     username: str
+    display_name: str | None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -39,3 +42,15 @@ class UserLogin(BaseModel):
 class TokenRead(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class UserUpdate(BaseModel):
+    username: str | None = Field(default=None, min_length=3, max_length=64, pattern=r"^[a-zA-Z0-9_]+$")
+    display_name: str | None = Field(default=None, max_length=64)
+
+    @field_validator("username")
+    @classmethod
+    def normalize_username(cls, value: str | None) -> str:
+        if value is None:
+            raise ValueError("Username cannot be null")
+        return value.lower()
