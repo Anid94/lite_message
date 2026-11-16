@@ -54,3 +54,11 @@ class UserUpdate(BaseModel):
         if value is None:
             raise ValueError("Username cannot be null")
         return value.lower()
+
+
+class UserPublic(BaseModel):
+    id: int
+    username: str
+    display_name: str | None
+
+    model_config=ConfigDict(from_attributes=True)

@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from models import User
 from security import hash_password, verify_password, create_access_token
 from repo.users import UsersRepo
-from schemas import UserCreate, UserLogin, UserUpdate
+from schemas import UserCreate, UserLogin, UserUpdate, UserRead
 from exceptions import EmailAlreadyIsTaken, UsernameAlreadyIsTaken, InvalidCredentials, InvalidToken
 
 
@@ -73,3 +73,14 @@ class UserService:
             self.db.rollback()
             raise
         return user
+
+    def user_search(
+            self, username: str,
+            limit: int,
+            offset: int,
+            user_id: int,
+    ) -> list[User]:
+        username = username.strip()
+        if username == "":
+            return []
+        return self.repo.get_users(username, user_id, limit, offset)

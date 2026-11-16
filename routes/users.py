@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from database import get_db
 from dependencies import get_current_user
-from schemas import UserRead, UserCreate, TokenRead, UserLogin, UserUpdate
+from schemas import UserRead, UserCreate, TokenRead, UserLogin, UserUpdate, UserPublic
 from services.users import UserService
 from models import User
 
@@ -18,6 +18,18 @@ def get_user(
         user: User = Depends(get_current_user)
 ) -> UserRead:
     return user
+
+
+@router.get("/search", status_code=200, response_model=list[UserPublic])
+def user_search(
+        username: str,
+        limit: int = Query(default=10, ge=1, le=50),
+        offset: int = Query(default=0, ge=0),
+        service: UserService = Depends(get_user_services),
+        current_user: User = Depends(get_current_user),
+):
+    return service.user_search(username, limit, offset, current_user.id)
+
 
 @router.post("", status_code=201, response_model=UserRead)
 def create_user(

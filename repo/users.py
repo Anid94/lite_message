@@ -43,3 +43,16 @@ class UsersRepo:
         user = self.db.scalar(stmt)
 
         return user
+
+    def get_users(
+            self,
+            username: str,
+            user_id: int,
+            limit: int,
+            offset: int,
+    ) -> list[User]:
+        stmt = select(User).where(
+            User.id != user_id,
+            User.username.istartswith(username, autoescape=True),
+        ).order_by(User.id).limit(limit).offset(offset)
+        return self.db.scalars(stmt).all()
