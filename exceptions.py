@@ -36,3 +36,23 @@ class CantRequestYourself(AppError):
 class ContactAlreadyExists(AppError):
     status_code = 409
     detail = "Contact already is taken"
+
+
+class ContactNotFound(AppError):
+    status_code = 404
+    detail = "Contact not found"
+
+
+class ContactAlreadyAccepted(AppError):
+    status_code = 409
+    detail = "Contact already accepted"
+
+
+class ContactNotPending(AppError):
+    status_code = 409
+    detail = "Contact request is no longer pending"
+
+
+class ContactNotAccepted(AppError):
+    status_code = 409
+    detail = "Contact not accepted"
