@@ -73,3 +73,17 @@ class ContactRead(BaseModel):
     created_at: datetime
 
     model_config=ConfigDict(from_attributes=True)
+
+
+class MessageCreate(BaseModel):
+    text: str = Field(min_length=1, max_length=4000)
+
+
+class MessageRead(BaseModel):
+    id: int
+    sender_id: int
+    recipient_id: int
+    text: str
+    created_at: datetime
+
+    model_config=ConfigDict(from_attributes=True)

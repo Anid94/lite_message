@@ -15,6 +15,7 @@ class User(Base):
     display_name: Mapped[str | None] = mapped_column(String(64), nullable=True)
     password_hash: Mapped[str] = mapped_column(Text, nullable=False)
     token_version: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     sent_contacts: Mapped[list["Contact"]] = relationship(
         foreign_keys="Contact.requester_id",
@@ -23,6 +24,14 @@ class User(Base):
     received_contacts: Mapped[list["Contact"]] = relationship(
         foreign_keys="Contact.addressee_id",
         back_populates="addressee",
+    )
+    sent_messages: Mapped[list["Message"]] = relationship(
+        foreign_keys="Message.sender_id",
+        back_populates="sender"
+    )
+    recipient_messages: Mapped[list["Message"]] = relationship(
+        foreign_keys="Message.recipient_id",
+        back_populates="recipient"
     )
 
 
@@ -42,4 +51,27 @@ class Contact(Base):
     addressee: Mapped["User"] = relationship(
         foreign_keys="Contact.addressee_id",
         back_populates="received_contacts",
+    )
+
+
+class Message(Base):
+    __tablename__ = "messages"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    sender_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    recipient_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    sender: Mapped["User"] = relationship(
+        foreign_keys="Message.sender_id",
+        back_populates="sent_messages",
+    )
+    recipient: Mapped["User"] = relationship(
+        foreign_keys="Message.recipient_id",
+        back_populates="recipient_messages",
+    )
+
+    __table_args__ = (
+        Index("ix_sender_recipient_messages", "sender_id", "recipient_id", "created_at"),
     )
