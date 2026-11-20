@@ -56,3 +56,8 @@ class ContactNotPending(AppError):
 class ContactNotAccepted(AppError):
     status_code = 409
     detail = "Contact not accepted"
+
+
+class DialogNotExist(AppError):
+    status_code = 404
+    detail = "Dialog not found"

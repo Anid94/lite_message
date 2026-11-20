@@ -2,12 +2,13 @@ from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
 
 from exceptions import AppError
-from routes import users, contacts
+from routes import users, contacts, messages
 
 app = FastAPI()
 
 app.include_router(users.router)
 app.include_router(contacts.router)
+app.include_router(messages.router)
 
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
